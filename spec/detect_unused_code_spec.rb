@@ -3,12 +3,14 @@ require File.expand_path("../spec_helper", __FILE__)
 module Danger
   describe Danger::DangerDetectUnusedCode do
     it "should be a plugin" do
+      binding.pry
       expect(Danger::DangerDetectUnusedCode.new(nil)).to be_a Danger::Plugin
     end
 
     #
     # You should test your custom attributes and methods here
     #
+=begin
     describe "with Dangerfile" do
       before do
         @dangerfile = testing_dangerfile
@@ -42,5 +44,6 @@ module Danger
       end
 
     end
+=end
   end
 end
