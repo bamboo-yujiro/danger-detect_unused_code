@@ -3,8 +3,13 @@ require File.expand_path("../spec_helper", __FILE__)
 module Danger
   describe Danger::DangerDetectUnusedCode do
     it "should be a plugin" do
+      expect(Danger::DangerDetectUnusedCode < Danger::Plugin).to be_truthy
+      @duc = testing_dangerfile.detect_unused_code
+      allow(@duc.git).to receive(:added_files).and_return(["hoge/Piyo.swift"])
+      allow(@duc.git).to receive(:deleted_files).and_return(["hoge/Piyo2.swift"])
+      allow(@duc.git).to receive(:modified_files).and_return(["hoge/Piyo3.swift"])
+      @duc.config_file = "dummy.rb"
       binding.pry
-      expect(Danger::DangerDetectUnusedCode.new(nil)).to be_a Danger::Plugin
     end
 
     #

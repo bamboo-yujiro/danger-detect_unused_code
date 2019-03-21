@@ -23,11 +23,25 @@ module Danger
     # @return   [Array<String>]
     attr_accessor :my_attribute
 
+    attr_accessor :config_file
+
     # A method that you can call from your Dangerfile
     # @return   [Array<String>]
     #
-    def warn_on_mondays
-      warn 'Trying to merge code on a Monday' if Date.today.wday == 1
+    def detect
+      git_diff_files = (git.modified_files - git.deleted_files) + git.added_files
+      result = `ruby #{config_file} ci`
+      result_array = result.split("\n")
+      indicating_files = []
+      unusecode_exists_line = result_array.each do |x|
+        diff_file = git_diff_files.find { |y| x.include? y }
+        next unless diff_file
+        matches = x.match(/\.swift\:([0-9]+)\:[0-9]\: +(.*)/)
+        indicating_files.push [matches[2], diff_file, matches[1].to_i]
+      end
+      indicating_files.each do |file|
+        send(:warn, file[0], file: file[1], line: file[2])
+      end
     end
   end
 end
